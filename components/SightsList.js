@@ -18,20 +18,26 @@ export default function SightsList({ list }) {
     variables: { listId },
   });
 
+  if (error) {
+    console.error(error);
+  }
+
   return (
-    <>
-      <h3 className="text-4xl pl-8 text-accent-1">{name}</h3>
+    <div className="border-gray-200 border-1 bg-gray-50 shadow-md mx-5 rounded-lg mb-5">
+      <h3 className="text-2xl pl-5 py-3 text-gray-800">{name}</h3>
       {!loading &&
         data.sights.map((s) => (
-          <div className="pl-12 p-3 flex">
+          <div className="pl-5 p-3 flex bg-gray-100 rounded-b-lg">
             <img
               src={s.image}
               alt="sight image"
-              className="rounded-full h-12 w-12"
+              className="rounded-full h-10 w-10"
             />
-            <div className="text-lg flex items-center pl-3">{s.name}</div>
+            <div className="text-lg flex items-center pl-2 text-gray-800">
+              {s.name}
+            </div>
           </div>
         ))}
-    </>
+    </div>
   );
 }

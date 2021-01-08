@@ -6,6 +6,7 @@ const client = new ApolloClient({
   uri: "https://city-lists.hasura.app/v1/graphql",
   cache: new InMemoryCache(),
 });
+
 function MyApp({ Component, pageProps }) {
   return (
     <ApolloProvider client={client}>
