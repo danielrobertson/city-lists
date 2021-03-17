@@ -13,7 +13,6 @@
     "next": "latest",
     "postcss": "^8.2.3",
     "react": "^16.13.1",
-    "react-autocomplete": "^1.8.1",
     "react-dom": "^16.13.1"
   },
   "devDependencies": {

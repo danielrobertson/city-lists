@@ -23,7 +23,9 @@ export default function IndexPage() {
   return (
     <div>
       <div className="bg-white shadow-2xl h-screen" style={{ width: "470px" }}>
-        <SearchBar />
+        <div className="pt-5 px-4">
+          <SearchBar onClear={() => {}} onSearch={() => {}} />
+        </div>
         <div className="mt-7">
           {!loading && data.list.map((l) => <SightsList key={l.id} list={l} />)}
         </div>

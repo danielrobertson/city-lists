@@ -1,21 +1,123 @@
-import Autocomplete from "react-autocomplete";
-import { useState } from "react";
+import classnames from "classnames";
+import debounce from "lodash/debounce";
+import PropTypes from "prop-types";
+import React, { useCallback, useEffect, useState } from "react";
 
-export default function SearchBar() {
-  const [citySearchValue, setCitySearchValue] = useState("");
-  console.log(citySearchValue);
+export default function SearchBar(props) {
+  const {
+    className,
+    debounceTimeout,
+    onClear = () => {},
+    onSearch = () => {},
+    placeholder,
+    ...others
+  } = props;
+
+  const [value, setValue] = useState("");
+  const [active, setActive] = useState(false);
+  const classes = classnames(className, "relative");
+
+  const handleChange = (e) => {
+    setValue(e.target.value);
+    setActive(e.target.value.length > 0);
+    debouncedOnChange(e.target.value);
+  };
+
+  const debouncedOnChange = useCallback(
+    debounce((val) => {
+      if (val === "") {
+        onClear();
+      } else if (val !== "") {
+        onSearch(val);
+      }
+    }, debounceTimeout),
+    [debounceTimeout, onClear, onSearch]
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedOnChange.cancel();
+    };
+  }, [debouncedOnChange]);
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    onSearch(value);
+  };
+
+  const onKeyDownHandler = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onSearch(value);
+    }
+  };
+
+  const handleClear = (e) => {
+    if (e) {
+      e.preventDefault();
+    }
+    onClear();
+    setValue("");
+    setActive(false);
+  };
+
+  const onClearKeyDownHandler = ({ key }) => {
+    if (key === "Enter" || key === " ") {
+      handleClear();
+    }
+  };
 
   return (
-    <>
-      <div className="pt-4 px-5 relative w-full">
+    <form
+      className="relative w-full"
+      role="search"
+      className={classes}
+      {...others}
+    >
+      <style jsx>{`
+        input::placeholder {
+          color: #6b7280;
+        }
+      `}</style>
+      <input
+        aria-label="search"
+        className="relative w-full py-3 pl-3 h-full rounded-lg bg-gray-200"
+        onChange={handleChange}
+        onKeyDown={onKeyDownHandler}
+        placeholder={placeholder}
+        value={value}
+        type="search"
+      />
+      {/* <button
+        className={classnames("flex justify-center absolute h-full", {
+          hidden: !active,
+        })}
+        onClick={handleClear}
+        onKeyDown={onClearKeyDownHandler}
+        style={{ top: "0px", right: "40px", width: "48px" }}
+        aria-label="Clear"
+      >
+        <svg className="h-full" width="15" height="15">
+          <use href="#clear" />
+        </svg>
+      </button> */}
+      <button
+        className={classnames("absolute h-full rounded-r", {
+          "bg-yellow": active,
+        })}
+        onClick={handleClick}
+        onKeyDown={onKeyDownHandler}
+        style={{ top: "0", right: "0", width: "40px" }}
+        type="submit"
+        aria-label="Submit"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
           width="25"
-          className="text-gray-500 absolute"
-          style={{ top: "24px", right: "35px" }}
+          className="text-gray-500"
         >
           <path
             strokeLinecap="round"
@@ -24,44 +126,20 @@ export default function SearchBar() {
             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
           />
         </svg>
-        <Autocomplete
-          getItemValue={(item) => item.label}
-          items={[
-            { label: "Austin, TX" },
-            { label: "Seattle, WA" },
-            { label: "Phoenix, AZ" },
-          ]}
-          wrapperProps={{ className: "w-full" }}
-          renderInput={(props) => {
-            return (
-              <>
-                <style jsx>{`
-                  input::placeholder {
-                    color: #6b7280;
-                  }
-                `}</style>
-                <input
-                  {...props}
-                  type="search"
-                  className="rounded-lg bg-gray-200 p-2 w-full text-center "
-                  placeholder="Search by city..."
-                />
-              </>
-            );
-          }}
-          renderItem={(item, highlighted) => (
-            <div
-              key={item.id}
-              style={{ backgroundColor: highlighted ? "#eee" : "" }}
-            >
-              {item.label}
-            </div>
-          )}
-          value={citySearchValue}
-          onChange={(e) => setCitySearchValue(e.target.value)}
-          onSelect={(val) => setCitySearchValue(val)}
-        />
-      </div>
-    </>
+      </button>
+    </form>
   );
 }
+
+SearchBar.propTypes = {
+  className: PropTypes.string,
+  debounceTimeout: PropTypes.number,
+  onClear: PropTypes.func.isRequired,
+  onSearch: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+};
+
+SearchBar.defaultProps = {
+  debounceTimeout: 300,
+  placeholder: "Search…",
+};
