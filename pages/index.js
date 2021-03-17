@@ -21,20 +21,17 @@ export default function IndexPage() {
   }
 
   return (
-    <div className="font-nunito">
-      <div
-        className="h-screen w-screen bg-cover absolute"
-        style={{ backgroundImage: "url('/map.png')", zIndex: -1, top: 0 }}
-      ></div>
-      <div
-        className="mt-3 ml-3 border-2 bg-gray-200 opacity-95 rounded-lg"
-        style={{ width: "470px" }}
-      >
+    <div>
+      <div className="bg-white shadow-2xl h-screen" style={{ width: "470px" }}>
         <SearchBar />
         <div className="mt-7">
           {!loading && data.list.map((l) => <SightsList key={l.id} list={l} />)}
         </div>
       </div>
+      <div
+        className="h-screen w-screen bg-cover absolute"
+        style={{ backgroundImage: "url('/map.png')", zIndex: -1, top: 0 }}
+      ></div>
     </div>
   );
 }
