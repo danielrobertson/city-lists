@@ -13,14 +13,14 @@ export default function SearchBar() {
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          width="30"
+          width="25"
           className="text-gray-500 absolute"
-          style={{ top: "37px", left: "35px" }}
+          style={{ top: "24px", right: "35px" }}
         >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
+            strokeWidth={1.8}
             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
           />
         </svg>
@@ -34,18 +34,25 @@ export default function SearchBar() {
           wrapperProps={{ className: "w-full" }}
           renderInput={(props) => {
             return (
-              <input
-                {...props}
-                type="search"
-                className="shadow-md rounded border-2 p-3 w-full text-center text-gray-800"
-                placeholder="Search by city..."
-              />
+              <>
+                <style jsx>{`
+                  input::placeholder {
+                    color: #6b7280;
+                  }
+                `}</style>
+                <input
+                  {...props}
+                  type="search"
+                  className="rounded-lg bg-gray-200 p-2 w-full text-center "
+                  placeholder="Search by city..."
+                />
+              </>
             );
           }}
           renderItem={(item, highlighted) => (
             <div
               key={item.id}
-              style={{ backgroundColor: highlighted ? "#eee" : "transparent" }}
+              style={{ backgroundColor: highlighted ? "#eee" : "" }}
             >
               {item.label}
             </div>
