@@ -1,12 +1,13 @@
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import React from "react";
 import "../styles/index.css";
-import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { ApolloProvider } from "@apollo/client";
 
 const client = new ApolloClient({
   uri: "https://city-lists.hasura.app/v1/graphql",
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache()
 });
 
+// eslint-disable-next-line react/prop-types
 function MyApp({ Component, pageProps }) {
   return (
     <ApolloProvider client={client}>

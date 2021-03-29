@@ -17,14 +17,8 @@ export default function SearchBar(props) {
   const [active, setActive] = useState(false);
   const classes = classnames(className, "relative");
 
-  const handleChange = (e) => {
-    setValue(e.target.value);
-    setActive(e.target.value.length > 0);
-    debouncedOnChange(e.target.value);
-  };
-
   const debouncedOnChange = useCallback(
-    debounce((val) => {
+    debounce(val => {
       if (val === "") {
         onClear();
       } else if (val !== "") {
@@ -34,25 +28,27 @@ export default function SearchBar(props) {
     [debounceTimeout, onClear, onSearch]
   );
 
-  useEffect(() => {
-    return () => {
-      debouncedOnChange.cancel();
-    };
-  }, [debouncedOnChange]);
+  const handleChange = e => {
+    setValue(e.target.value);
+    setActive(e.target.value.length > 0);
+    debouncedOnChange(e.target.value);
+  };
 
-  const handleClick = (e) => {
+  useEffect(() => debouncedOnChange.cancel(), [debouncedOnChange]);
+
+  const handleClick = e => {
     e.preventDefault();
     onSearch(value);
   };
 
-  const onKeyDownHandler = (e) => {
+  const onKeyDownHandler = e => {
     if (e.key === "Enter") {
       e.preventDefault();
       onSearch(value);
     }
   };
 
-  const handleClear = (e) => {
+  const handleClear = e => {
     if (e) {
       e.preventDefault();
     }
@@ -69,16 +65,17 @@ export default function SearchBar(props) {
 
   return (
     <form
-      className="relative w-full"
+      className={classnames("relative w-full", classes)}
       role="search"
-      className={classes}
       {...others}
     >
-      <style jsx>{`
-        input::placeholder {
-          color: #6b7280;
-        }
-      `}</style>
+      <style jsx>
+        {`
+          input::placeholder {
+            color: #6b7280;
+          }
+        `}
+      </style>
       <input
         aria-label="search"
         className="relative w-full py-3 pl-3 h-full rounded-lg bg-gray-200"
@@ -103,7 +100,7 @@ export default function SearchBar(props) {
       </button> */}
       <button
         className={classnames("absolute h-full rounded-r", {
-          "bg-yellow": active,
+          "bg-yellow": active
         })}
         onClick={handleClick}
         onKeyDown={onKeyDownHandler}
@@ -136,10 +133,11 @@ SearchBar.propTypes = {
   debounceTimeout: PropTypes.number,
   onClear: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
-  placeholder: PropTypes.string,
+  placeholder: PropTypes.string
 };
 
 SearchBar.defaultProps = {
   debounceTimeout: 300,
   placeholder: "Search…",
+  className: ""
 };

@@ -1,6 +1,7 @@
-import { useQuery, gql } from "@apollo/client";
-import SightsList from "../components/SightsList";
+import { gql, useQuery } from "@apollo/client";
+import React from "react";
 import SearchBar from "../components/SearchBar";
+import SightsList from "../components/SightsList";
 
 const GET_LISTS_QUERY = gql`
   query GetLists {
@@ -27,13 +28,13 @@ export default function IndexPage() {
           <SearchBar onClear={() => {}} onSearch={() => {}} />
         </div>
         <div className="mt-7">
-          {!loading && data.list.map((l) => <SightsList key={l.id} list={l} />)}
+          {!loading && data.list.map(l => <SightsList key={l.id} list={l} />)}
         </div>
       </div>
       <div
         className="h-screen w-screen bg-cover absolute"
         style={{ backgroundImage: "url('/map.png')", zIndex: -1, top: 0 }}
-      ></div>
+      />
     </div>
   );
 }

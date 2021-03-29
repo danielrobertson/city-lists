@@ -1,5 +1,6 @@
 import { useQuery, gql } from "@apollo/client";
-import Image from "next/image";
+import React from "react";
+import PropTypes from "prop-types";
 
 const GET_SIGHTS_QUERY = gql`
   query GetSights($listId: uuid!) {
@@ -15,7 +16,7 @@ export default function SightsList({ list }) {
   const { id: listId, name } = list;
 
   const { loading, error, data } = useQuery(GET_SIGHTS_QUERY, {
-    variables: { listId },
+    variables: { listId }
   });
 
   if (error) {
@@ -32,7 +33,7 @@ export default function SightsList({ list }) {
             <div className="pl-5 p-3 flex bg-gray-100">
               <img
                 src={sight.image}
-                alt="sight image"
+                alt={`sight ${sight.name}`}
                 className="rounded-full h-10 w-10"
               />
               <div className="text-lg flex items-center pl-2 text-gray-800">
@@ -44,3 +45,10 @@ export default function SightsList({ list }) {
     </div>
   );
 }
+
+SightsList.propTypes = {
+  list: PropTypes.shape({
+    name: PropTypes.string,
+    id: PropTypes.string
+  }).isRequired
+};
